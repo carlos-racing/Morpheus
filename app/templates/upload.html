@@ -1,0 +1,30 @@
+<!-- Esta página es la que se muestra al presionar el link "subir excel" -->
+{% extends 'base.html' %}
+{% block title %}Subir Excel - Actualizar camas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 8px; margin-top: 2em;">
+  <h2 style="text-align: center;">Actualizar camas desde Excel</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+  <form action="{{ url_for('main.preview') }}" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="excel">Selecciona archivo (.xlsx, .xls, .csv)</label>
+      <input type="file" name="excel" accept=".xlsx,.xls,.csv" class="form-control" required>
+    </div>
+    
+    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1em;">Vista previa</button>
+  </form>
+</div>
+{% endblock %}

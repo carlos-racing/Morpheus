@@ -1,0 +1,60 @@
+<!-- Esta página se abre al pulsar el botón "vista previa" depués de pulsar el link "subir excel"-->
+{% extends 'base.html' %}
+{% block title %}Vista previa de cambios{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2>Vista previa de cambios</h2>
+  {% if camas and camas|length > 0 %}
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre alumno</th>
+          <th>Primer apellido</th>
+          <th>Segundo apellido</th>
+          <th>Brigada</th>
+          <th>Número alumno</th>
+          <th>Género</th>
+          <th>Especialidad</th>
+          <th>Bed ID</th>
+          <th>Estado</th>
+          <th>Planta</th>
+          <th>Zona</th>
+          <th>Módulo</th>
+          <th>Habitación</th>
+          <th>Número</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cama in camas %}
+          <tr>
+            <td>{{ cama.nombre_alumno }}</td>
+            <td>{{ cama.apellido1 }}</td>
+            <td>{{ cama.apellido2 }}</td>
+            <td>{{ cama.brigada }}</td>
+            <td>{{ cama.numero_alumno }}</td>
+            <td>{{ cama.genero }}</td>
+            <td>{{ cama.especialidad }}</td>
+            <td>{{ cama.bed_id }}</td>
+            <td>{{ cama.estado }}</td>
+            <td>{{ cama.planta }}</td>
+            <td>{{ cama.zona }}</td>
+            <td>{{ cama.modulo }}</td>
+            <td>{{ cama.habitacion }}</td>
+            <td>{{ cama.numero }}</td>
+            
+            <td>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+      <form method="post" action="{{ url_for('main.apply_update') }}">
+        <input type="hidden" name="filename" value="{{ filename }}">
+        <button type="submit">Aplicar cambios</button>
+      </form>
+  {% else %}
+    <p>No hay datos para mostrar.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+<!-- Esta página es la que se muestra al presionar el link "consultar" -->
+{% extends 'base.html' %}
+{% block title %}Consultar Disponibilidad{% endblock %}
+{% block content %}
+  <main>
+    <section class="controls">
+      <h2>Consultar Disponibilidad</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <div class="select-row">
+        <form method="get" action="{{ url_for('main.consulta') }}">
+          <div class="select-group">
+            <label for="planta">Planta</label>
+            <select id="planta" name="planta" onchange="this.form.submit()">
+              <option value="">Planta</option>
+              {% for p in plantas %}
+                <option value="{{ p }}" {% if planta == p %}selected{% endif %}>{{ p }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="zona">Zona</label>
+            <select id="zona" name="zona" onchange="this.form.submit()" {% if not zonas %}disabled{% endif %}>
+              <option value="">Zona</option>
+              {% for z in zonas %}
+                <option value="{{ z }}" {% if zona == z %}selected{% endif %}>{{ z }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="modulo">Módulo</label>
+            <select id="modulo" name="modulo" onchange="this.form.submit()">
+              <option value="">Módulo</option>
+              {% for m in modulos %}
+                <option value="{{ m }}" {% if modulo == m %}selected{% endif %}>{{ m }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="habitacion">Habitación</label>
+            <select id="habitacion" name="habitacion" onchange="this.form.submit()">
+              <option value="">Habitación</option>
+              {% for h in habitaciones %}
+                <option value="{{ h }}" {% if habitacion == h %}selected{% endif %}>{{ h }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero" onchange="this.form.submit()">
+              <option value="">Género</option>
+              {% for g in generos %}
+                <option value="{{ g }}" {% if genero == g %}selected{% endif %}>{{ g }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="numero_alumno">Nº Alumno</label>
+            <select id="numero_alumno" name="numero_alumno" onchange="this.form.submit()">
+              <option value="">Nº Alumno</option>
+              {% for n in numeros_alumno %}
+                <option value="{{ n }}" {% if numero_alumno == n %}selected{% endif %}>{{ n }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="brigada">Brigada</label>
+            <select id="brigada" name="brigada" onchange="this.form.submit()">
+              <option value="">Todas</option>
+              {% for b in brigadas %}
+                <option value="{{ b }}" {% if brigada == b %}selected{% endif %}>{{ b }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" name="consultar" value="1">Consultar</button>
+        </form>
+      </div>
+      {% if camas %} 
+      <div class="text-end mt-3 mb-3 d-flex justify-content-between align-items-center">
+          <button type="button" onclick="window.print()" class="btn btn-primary print-allowed" style="margin: 1em 0;">Imprimir pantalla</button>
+          <div class="rounded p-3 mb-2 bg-warning-subtle" style="border: 2px solid black; width: 400px; margin-top: 10px; text-align: center;">
+              <p style="color: green; font-weight: bold;">Camas Libres: {{ camas_libres }}</p>
+              <p style="color: red; font-weight: bold;">Camas Ocupadas: {{ camas_ocupadas }}</p>
+          </div>
+          <a class="btn btn-success" href="{{ url_for('main.vista_impresion', planta=planta, zona=zona, modulo=modulo, habitacion=habitacion, genero=genero, numero_alumno=numero_alumno, brigada=brigada) }}" target="_blank">
+              Imprimir tarjeta
+          </a>
+      </div>
+        <ul id="bed-list">
+          {% for cama in camas %}
+            <li>
+              Planta {{ cama.planta }}, Zona {{ cama.zona }}, Módulo {{ cama.modulo }}, Hab. {{ cama.habitacion }}, 
+              Cama {{ cama.numero }}, Estado {{ cama.estado }}
+              {% if cama.brigada %}, Brigada: {{ cama.brigada }}{% endif %}
+              {% if cama.genero %} - Género: {{ cama.genero }}{% endif %}
+              {% if cama.estado == "OCUPADA" %}
+                <br>Alumno: {{ cama.nombre_alumno }} {{ cama.apellido1 }} {{ cama.apellido2 }}
+                <br>Nº Alumno: {{ cama.numero_alumno }}
+                <br>Brigada: {{ cama.brigada }} - Especialidad: {{ cama.especialidad }}
+                {% if session['rol'] != 'mando' %}
+                  <form method="post" action="{{ url_for('main.desocupar_cama') }}" style="display:inline;">
+                    <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
+                    <input type="hidden" name="planta" value="{{ request.args.get('planta', '') }}">
+                    <input type="hidden" name="zona" value="{{ request.args.get('zona', '') }}">
+                    <input type="hidden" name="modulo" value="{{ request.args.get('modulo', '') }}">
+                    <input type="hidden" name="habitacion" value="{{ request.args.get('habitacion', '') }}">
+                    <input type="hidden" name="genero" value="{{ request.args.get('genero', '') }}">
+                    <input type="hidden" name="numero_alumno" value="{{ request.args.get('numero_alumno', '') }}">
+                    <input type="hidden" name="brigada" value="{{ request.args.get('brigada', '') }}">
+                    <input type="hidden" name="consultar" value="1">
+                    <button type="submit" class="btn btn-warning btn-sm">Desocupar</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <ul id="bed-list">
+          <li>No hay camas</li>
+        </ul>
+      {% endif %}
+    </section>
+  </main>
+{% endblock %}
