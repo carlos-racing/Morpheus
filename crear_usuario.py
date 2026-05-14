@@ -4,13 +4,10 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 
 
-MONGO_URI = os.getenv(
-    "MONGO_URI",
-    "mongodb://APP_USER:APP_PASSWORD@MONGO_HOST:27017/Morpheus?authSource=admin",
-)
+MONGO_URI = os.environ["MONGO_URI"]
 DB_NAME = os.getenv("MONGO_DB", "Morpheus")
 ADMIN_USER = os.getenv("ADMIN_USER", "admin")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin")
+ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 ADMIN_ROLE = os.getenv("ADMIN_ROLE", "admin")
 PASSWORD_FIELD = "contrase\u00f1a"
 

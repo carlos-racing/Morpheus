@@ -16,13 +16,13 @@ Edita `.env` y cambia, como minimo, `SECRET_KEY` y `ADMIN_PASSWORD`.
 
 ## 2. MongoDB
 
-La aplicacion apunta por defecto al MongoDB del nuevo servidor:
+Configura `MONGO_URI` en `.env` con las credenciales reales del MongoDB del servidor.
 
 ```text
 mongodb://APP_USER:APP_PASSWORD@MONGO_HOST:27017/Morpheus?authSource=admin
 ```
 
-Si ese usuario no existe en el Mongo del servidor nuevo, crea un usuario equivalente o cambia `MONGO_URI` en `.env` por las credenciales reales del contenedor `mongodb`.
+Si ese usuario no existe en el Mongo del servidor nuevo, crea un usuario especifico para la aplicacion con permisos sobre la base `Morpheus`.
 
 ## 3. Levantar Morpheus
 
@@ -56,7 +56,7 @@ Las credenciales del admin se leen de `.env`:
 
 ```text
 ADMIN_USER=admin
-ADMIN_PASSWORD=replace-with-a-temporary-admin-password
+ADMIN_PASSWORD=<contrasena-temporal-admin>
 ADMIN_ROLE=admin
 ```
 

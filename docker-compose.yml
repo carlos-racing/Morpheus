@@ -6,11 +6,11 @@ services:
     ports:
       - "${MORPHEUS_PORT:-8090}:8080"
     environment:
-      SECRET_KEY: "${SECRET_KEY:-replace-with-secret}"
-      MONGO_URI: "${MONGO_URI:-mongodb://APP_USER:APP_PASSWORD@MONGO_HOST:27017/Morpheus?authSource=admin}"
+      SECRET_KEY: "${SECRET_KEY:?SECRET_KEY is required}"
+      MONGO_URI: "${MONGO_URI:?MONGO_URI is required}"
       MONGO_DB: "${MONGO_DB:-Morpheus}"
       ADMIN_USER: "${ADMIN_USER:-admin}"
-      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-admin}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}"
       ADMIN_ROLE: "${ADMIN_ROLE:-admin}"
     volumes:
       - morpheus_uploads:/app/app/uploads

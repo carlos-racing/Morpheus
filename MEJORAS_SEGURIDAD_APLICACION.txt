@@ -1,0 +1,203 @@
+MEJORAS RECOMENDADAS PARA MORPHEUS
+==================================
+
+Este documento recoge mejoras pendientes tanto de seguridad como de mantenimiento
+de la aplicacion. No son cambios aplicados, sino una lista de trabajo priorizada.
+
+
+1. SEGURIDAD CRITICA
+--------------------
+
+1.1. Purgar secretos del historial de Git
+- Reescribir el historial para eliminar credenciales de commits antiguos.
+- Forzar subida a GitHub despues de la purga historica.
+- Avisar a cualquier persona con clones existentes para que vuelva a clonar o resincronice.
+
+1.2. Cambiar contrasenas expuestas
+- Cambiar la contrasena del usuario Mongo e2t.
+- Cambiar la contrasena root/admin de Mongo si ha sido compartida.
+- Cambiar la contrasena inicial del usuario admin de la aplicacion.
+
+1.3. Cerrar exposicion de MongoDB
+- Evitar publicar MongoDB en 0.0.0.0:27017 si no es necesario.
+- Preferir acceso por red Docker interna o limitarlo a la LAN/firewall.
+- Usar un usuario especifico de la aplicacion con permisos solo sobre la BD Morpheus.
+
+1.4. HTTPS
+- Publicar Morpheus detras del nginx_proxy con HTTPS.
+- Evitar uso de credenciales por HTTP plano.
+
+1.5. Revisar proteccion de rutas
+- Comprobar el orden de decoradores @bp.route y @rol_requerido.
+- Algunas rutas pueden quedar registradas sin aplicar el control de rol si el orden es incorrecto.
+- Revisar especialmente endpoints de preview, apply, filtrar y eliminar.
+
+1.6. Anadir CSRF
+- Proteger todos los formularios POST contra CSRF.
+- Afecta a login, asignacion, desocupacion, gestion de usuarios, gestion de edificio y eliminaciones.
+
+1.7. Seguridad de sesiones
+r- Configurar SESSION_COOKIE_HTTPONLY.
+- Configurar SESSION_COOKIE_SAMESITE.
+- Configurar SESSION_COOKIE_SECURE cuando se use HTTPS.
+- Revisar duracion de sesion y cierre automatico.
+
+
+2. SEGURIDAD EN SUBIDA DE ARCHIVOS
+----------------------------------
+
+2.1. Validar nombres de archivo
+- No guardar directamente file.filename.
+- Usar nombres generados internamente o secure_filename.
+
+2.2. Limitar tamano de subida
+- Definir MAX_CONTENT_LENGTH en Flask.
+- Evitar subidas enormes que puedan tumbar la aplicacion.
+
+2.3. Validar contenido real
+- Comprobar extension y tambien estructura esperada.
+- Validar columnas obligatorias.
+- Rechazar filas vacias o datos inconsistentes.
+
+2.4. Gestionar archivos temporales
+- Borrar Excels subidos despues de procesarlos si no hacen falta.
+- Mantener app/uploads fuera de Git.
+
+
+3. MEJORAS DE BASE DE DATOS
+---------------------------
+
+3.1. Indices Mongo recomendados
+- bed_id con indice unico.
+- estado.
+- planta, zona, modulo, habitacion.
+- brigada.
+- numero_alumno.
+
+3.2. Normalizar estados
+- Guardar siempre OCUPADA o DESOCUPADA.
+- Aceptar variantes como Ocupada, ocupada, Desocupada, etc. solo al importar o recibir datos.
+
+3.3. Backups
+- Crear backup automatico de MongoDB.
+- Guardar copia periodica de la base Morpheus.
+- Probar restauracion, no solo generacion del backup.
+
+3.4. Usuarios
+- Evitar usuarios admin compartidos.
+- Crear usuarios personales si varias personas acceden.
+- Revisar roles y permisos.
+
+
+4. MEJORAS DE APLICACION
+------------------------
+
+4.1. Dividir app/routes.py
+- Separar autenticacion.
+- Separar gestion de camas.
+- Separar importacion Excel.
+- Separar gestion de usuarios.
+- Separar gestion de edificio.
+- Separar vistas de impresion.
+
+4.2. Crear capa de servicios
+- Centralizar operaciones sobre camas.
+- Centralizar operaciones sobre usuarios.
+- Evitar consultas Mongo repetidas directamente en cada ruta.
+
+4.3. Mejorar validacion de Excel
+- Validar columnas obligatorias.
+- Validar duplicados de bed_id.
+- Validar duplicados de numero_alumno.
+- Validar estado, genero, brigada y especialidad.
+- Informar errores por fila.
+
+4.4. Evitar cargar toda la BD cuando no sea necesario
+- Algunas consultas cargan todas las camas y filtran en Python.
+- Usar filtros Mongo directos cuando sea posible.
+
+4.5. Mejorar mensajes de error
+- Mostrar errores claros cuando falla una importacion.
+- Diferenciar error de formato, columnas, permisos o base de datos.
+
+4.6. Anadir endpoint de salud
+- Crear /health para comprobar si la app responde.
+- Util para Docker, Nginx y monitorizacion.
+
+4.7. Logs propios de aplicacion
+- Registrar errores de importacion.
+- Registrar acciones criticas: asignar, desocupar, eliminar brigada, crear usuario.
+- No depender solo de logs de Nginx.
+
+
+5. MEJORAS DE INTERFAZ
+----------------------
+
+5.1. Corregir codificacion de textos
+- Arreglar textos como GestiÃ³n, contraseÃ±a, NÂº, etc.
+- Asegurar UTF-8 en archivos y servidor.
+
+5.2. Unificar estilos
+- Reducir estilos inline.
+- Mantener Bootstrap y CSS propio de forma ordenada.
+
+5.3. Reorganizar panel principal
+- index.html esta casi vacio.
+- El panel se inyecta desde base.html si existen variables concretas.
+- Conviene mover esa logica a una plantilla clara de panel.
+
+5.4. Mejorar vistas de planos
+- Revisar uso de imagen planta1.png para varias plantas.
+- Normalizar calculo de resumen de plantas.
+- Mejorar responsive si se usa en pantallas pequenas.
+
+
+6. TESTS Y CALIDAD
+------------------
+
+6.1. Tests minimos
+- Login correcto e incorrecto.
+- Consulta de camas.
+- Asignacion de cama.
+- Desocupacion de cama.
+- Eliminacion de brigada.
+- Importacion de camas.
+- Creacion de usuario.
+
+6.2. Validacion antes de desplegar
+- python -m py_compile.
+- docker compose config.
+- docker compose up -d --build.
+- Prueba manual de login, consulta, asignacion e importacion.
+
+6.3. Limpieza de dependencias
+- Revisar requirements.txt.
+- Eliminar dependencias de desarrollo que no se usen en produccion si procede.
+
+
+7. PRIORIDAD PROPUESTA
+----------------------
+
+Prioridad 1:
+- Cambiar secretos y contrasenas.
+- Cerrar o limitar MongoDB.
+- Revisar decoradores de permisos.
+- Activar HTTPS.
+
+Prioridad 2:
+- Anadir CSRF.
+- Validar mejor subidas Excel.
+- Normalizar estados.
+- Crear indices Mongo.
+
+Prioridad 3:
+- Separar routes.py.
+- Anadir logs propios.
+- Crear endpoint /health.
+- Anadir backups automaticos.
+
+Prioridad 4:
+- Mejorar interfaz.
+- Corregir codificacion.
+- Anadir tests.
+- Limpiar dependencias.

@@ -1,0 +1,33 @@
+MEJORAS REALIZADAS EN MORPHEUS
+==============================
+
+Este documento recoge mejoras ya aplicadas al proyecto.
+
+
+1. SEGURIDAD
+------------
+
+1.1. Sacar secretos del codigo versionado actual
+Fecha: 2026-05-14
+
+Cambios realizados:
+- Eliminadas credenciales reales hardcodeadas de app/config.py.
+- Eliminada la SECRET_KEY por defecto del codigo.
+- MONGO_URI y SECRET_KEY pasan a ser variables de entorno obligatorias.
+- Eliminadas credenciales reales de docker-compose.yml.
+- docker-compose.yml exige SECRET_KEY, MONGO_URI y ADMIN_PASSWORD mediante variables de entorno.
+- Eliminadas credenciales reales de .env.example.
+- .env.example conserva solo placeholders sin secretos reales.
+- Eliminadas credenciales reales de import_beds.py.
+- Eliminadas credenciales reales de crear_usuario.py.
+- crear_usuario.py exige ADMIN_PASSWORD mediante variable de entorno.
+- DEPLOY.md ya no documenta credenciales reales.
+
+Revision realizada:
+- Busqueda en archivos versionados para detectar MONGO_URI, SECRET_KEY y contrasenas hardcodeadas.
+- Revision del historial de Git con git grep sobre todos los commits.
+- El historial contiene secretos en commits anteriores, incluyendo credenciales Mongo y SECRET_KEY antiguas.
+
+Nota importante:
+- Aunque ya no hay secretos reales en los archivos actuales, el historial de Git y GitHub puede conservar credenciales anteriores.
+- Para completar la limpieza historica de forma real hay que reescribir historial con una herramienta como git-filter-repo o BFG, forzar subida a GitHub y despues rotar todas las credenciales expuestas.

@@ -4,10 +4,7 @@ import os
 from pymongo import MongoClient, UpdateOne
 
 
-MONGO_URI = os.getenv(
-    "MONGO_URI",
-    "mongodb://APP_USER:APP_PASSWORD@MONGO_HOST:27017/Morpheus?authSource=admin",
-)
+MONGO_URI = os.environ["MONGO_URI"]
 DB_NAME = os.getenv("MONGO_DB", "Morpheus")
 BEDS_FILE = os.getenv("BEDS_FILE", "listado_camas.json")
 
