@@ -1,1 +1,19 @@
-ê
+services:
+  morpheus:
+    build: .
+    container_name: morpheus
+    restart: unless-stopped
+    ports:
+      - "${MORPHEUS_PORT:-8090}:8080"
+    environment:
+      SECRET_KEY: "${SECRET_KEY:-replace-with-secret}"
+      MONGO_URI: "${MONGO_URI:-mongodb://APP_USER:APP_PASSWORD@MONGO_HOST:27017/Morpheus?authSource=admin}"
+      MONGO_DB: "${MONGO_DB:-Morpheus}"
+      ADMIN_USER: "${ADMIN_USER:-admin}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-admin}"
+      ADMIN_ROLE: "${ADMIN_ROLE:-admin}"
+    volumes:
+      - morpheus_uploads:/app/app/uploads
+
+volumes:
+  morpheus_uploads:

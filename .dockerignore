@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.git/
+.gitignore
+.env
+env/
+venv/
+.venv/
+app/uploads/
+*.xlsx
+*.xls
+*.csv

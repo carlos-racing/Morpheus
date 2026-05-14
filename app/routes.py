@@ -5,10 +5,17 @@ import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 from functools import wraps
+import re
 
 bp = Blueprint('main', __name__, template_folder='templates')
 
 ALLOWED = {"xls", "xlsx", "csv"}
+
+def normalize_estado(value):
+    return str(value or "").strip().upper()
+
+def estado_query(value):
+    return {"$regex": f"^{re.escape(value)}$", "$options": "i"}
 
 def allowed_file(filename):
     return (
@@ -104,8 +111,8 @@ def consulta():
         ]
         
         # Contamos camas libres y ocupadas
-        camas_libres = len([b for b in camas if b.get('estado', '').upper() == 'DESOCUPADA'])
-        camas_ocupadas = len([b for b in camas if b.get('estado', '').upper() == 'OCUPADA'])
+        camas_libres = len([b for b in camas if normalize_estado(b.get('estado')) == 'DESOCUPADA'])
+        camas_ocupadas = len([b for b in camas if normalize_estado(b.get('estado')) == 'OCUPADA'])
 
     else:
         camas = []
@@ -170,7 +177,7 @@ def preview():
 
     # Validación de campo 'estado'
     for i, fila in enumerate(records):
-        estado = fila.get("estado", "").strip().upper()
+        estado = normalize_estado(fila.get("estado"))
         if estado and estado not in ("OCUPADA", "DESOCUPADA"):
             flash("Revise el documento. El estado de las camas ha de ser Ocupada o Desocupada.", "danger")
             return redirect(url_for("main.upload_page"))
@@ -265,7 +272,7 @@ def assign():
         free_beds = []
     else:
         students = []  
-        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "Desocupada"}, {"_id": 0, "bed_id": 1})]
+        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": estado_query("DESOCUPADA")}, {"_id": 0, "bed_id": 1})]
 
     return render_template(
         'assign.html',
@@ -302,7 +309,7 @@ def assign_upload():
             if bed_id:
                 camas_asignadas.append(bed_id)
         # Excluye las camas ya seleccionadas
-        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "DESOCUPADA"}, {"_id": 0, "bed_id": 1}) if b['bed_id'] not in camas_asignadas]
+        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": estado_query("DESOCUPADA")}, {"_id": 0, "bed_id": 1}) if b['bed_id'] not in camas_asignadas]
         return render_template('assign_preview.html', students=students, free_beds=free_beds, camas_asignadas=camas_asignadas)
     return render_template('assign_upload.html')
 
@@ -698,7 +705,7 @@ def panel():
     for planta in plantas:
         camas_planta = [b for b in camas if b['planta'] == planta]
         total = len(camas_planta)
-        ocupadas = sum(1 for b in camas_planta if b.get('estado') == 'OCUPADA')
+        ocupadas = sum(1 for b in camas_planta if normalize_estado(b.get('estado')) == 'OCUPADA')
         desocupadas = total - ocupadas
 
         resumen_por_planta[planta] = {
@@ -744,7 +751,7 @@ def imprimir_consulta():
     if numero_alumno: query["numero_alumno"] = numero_alumno
     if brigada: query["brigada"] = brigada
 
-    query["estado"] = "OCUPADA"
+    query["estado"] = estado_query("OCUPADA")
 
     camas = list(mongo.db.beds.find(query, {"_id": 0}))
     habitaciones = {}
@@ -782,7 +789,7 @@ def vista_impresion():
         if valor:
             query[campo] = valor
 
-    query["estado"] = "OCUPADA"
+    query["estado"] = estado_query("OCUPADA")
 
     camas = list(mongo.db.beds.find(query, {"_id": 0}))
     habitaciones = {}
@@ -806,7 +813,7 @@ def plano_planta1():
         if key not in resumen:
             resumen[key] = {'modulo': b['modulo'], 'camas': 0, 'libres': 0}
         resumen[key]['camas'] += 1
-        if b['estado'] == 'DESOCUPADA':
+        if normalize_estado(b.get('estado')) == 'DESOCUPADA':
             resumen[key]['libres'] += 1
 
     return render_template('plano_planta1.html', resumen=resumen)
@@ -832,7 +839,7 @@ def plano_planta2():
         if clave not in resumen:
             resumen[clave] = {"modulo": modulo, "camas": 0, "libres": 0}
         resumen[clave]["camas"] += 1
-        if cama.get("estado") == "DESOCUPADA":
+        if normalize_estado(cama.get("estado")) == "DESOCUPADA":
             resumen[clave]["libres"] += 1
 
     return render_template("plano_planta2.html", resumen=resumen)
@@ -851,7 +858,7 @@ def plano_planta3():
         if key not in resumen:
             resumen[key] = {"modulo": cama["modulo"], "camas": 0, "libres": 0}
         resumen[key]["camas"] += 1
-        if cama["estado"] == "DESOCUPADA":
+        if normalize_estado(cama.get("estado")) == "DESOCUPADA":
             resumen[key]["libres"] += 1
 
     return render_template('plano_planta3.html', resumen=resumen)
