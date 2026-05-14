@@ -8,36 +8,31 @@ de la aplicacion. No son cambios aplicados, sino una lista de trabajo priorizada
 1. SEGURIDAD CRITICA
 --------------------
 
-1.1. Purgar secretos del historial de Git
-- Reescribir el historial para eliminar credenciales de commits antiguos.
-- Forzar subida a GitHub despues de la purga historica.
-- Avisar a cualquier persona con clones existentes para que vuelva a clonar o resincronice.
-
-1.2. Cambiar contrasenas expuestas
+1.1. Cambiar contrasenas expuestas
 - Cambiar la contrasena del usuario Mongo e2t.
 - Cambiar la contrasena root/admin de Mongo si ha sido compartida.
 - Cambiar la contrasena inicial del usuario admin de la aplicacion.
 
-1.3. Cerrar exposicion de MongoDB
+1.2. Cerrar exposicion de MongoDB
 - Evitar publicar MongoDB en 0.0.0.0:27017 si no es necesario.
 - Preferir acceso por red Docker interna o limitarlo a la LAN/firewall.
 - Usar un usuario especifico de la aplicacion con permisos solo sobre la BD Morpheus.
 
-1.4. HTTPS
+1.3. HTTPS
 - Publicar Morpheus detras del nginx_proxy con HTTPS.
 - Evitar uso de credenciales por HTTP plano.
 
-1.5. Revisar proteccion de rutas
+1.4. Revisar proteccion de rutas
 - Comprobar el orden de decoradores @bp.route y @rol_requerido.
 - Algunas rutas pueden quedar registradas sin aplicar el control de rol si el orden es incorrecto.
 - Revisar especialmente endpoints de preview, apply, filtrar y eliminar.
 
-1.6. Anadir CSRF
+1.5. Anadir CSRF
 - Proteger todos los formularios POST contra CSRF.
 - Afecta a login, asignacion, desocupacion, gestion de usuarios, gestion de edificio y eliminaciones.
 
-1.7. Seguridad de sesiones
-r- Configurar SESSION_COOKIE_HTTPONLY.
+1.6. Seguridad de sesiones
+- Configurar SESSION_COOKIE_HTTPONLY.
 - Configurar SESSION_COOKIE_SAMESITE.
 - Configurar SESSION_COOKIE_SECURE cuando se use HTTPS.
 - Revisar duracion de sesion y cierre automatico.

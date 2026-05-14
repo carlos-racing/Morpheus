@@ -31,3 +31,25 @@ Revision realizada:
 Nota importante:
 - Aunque ya no hay secretos reales en los archivos actuales, el historial de Git y GitHub puede conservar credenciales anteriores.
 - Para completar la limpieza historica de forma real hay que reescribir historial con una herramienta como git-filter-repo o BFG, forzar subida a GitHub y despues rotar todas las credenciales expuestas.
+
+1.2. Purgar secretos del historial de Git
+Fecha: 2026-05-14
+
+Cambios realizados:
+- Reescrito el historial local de Git con git filter-branch.
+- Sustituidas credenciales Mongo antiguas por placeholders en commits historicos.
+- Sustituida SECRET_KEY antigua por placeholder en commits historicos.
+- Eliminadas referencias historicas a valores por defecto inseguros de ADMIN_PASSWORD y SECRET_KEY.
+- Eliminados de la historia los directorios env/, __pycache__, app/__pycache__ y app/uploads.
+- Eliminadas refs/original y reflogs locales.
+- Ejecutado git gc --prune=now --aggressive para compactar objetos locales.
+- Alineadas las referencias locales origin/main y origin/HEAD con la historia purgada.
+
+Verificacion realizada:
+- Busqueda en todos los commits locales con git grep sobre git rev-list --all.
+- No se encontraron coincidencias para las credenciales conocidas ni para las cadenas sensibles buscadas.
+
+Aviso importante:
+- La historia remota debe subirse con force push.
+- Cualquier clon existente debe volver a clonar el repositorio o resincronizarse contra la nueva historia.
+- Aunque se purgue Git, las credenciales expuestas deben considerarse comprometidas y rotarse.
