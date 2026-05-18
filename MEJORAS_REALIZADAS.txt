@@ -92,3 +92,32 @@ Cambios realizados:
 Notas:
 - El certificado privado .key debe permanecer solo en el servidor.
 - Si un equipo sigue mostrando aviso de certificado, debe actualizar directivas con gpupdate /force y reiniciar el navegador.
+
+1.5. Revisar proteccion de rutas
+Fecha: 2026-05-18
+
+Cambios realizados:
+- Revisado el orden de decoradores @bp.route, @login_requerido y @rol_requerido en app/routes.py.
+- Corregido el orden de decoradores para que Flask registre las rutas POST ya protegidas por @rol_requerido.
+- Protegido correctamente el POST /preview.
+- Protegido correctamente el POST /gestion-edificio/preview.
+- Protegido correctamente el POST /gestion-edificio/apply.
+- Protegido correctamente el POST /gestion-edificio/filtrar.
+- Protegido correctamente el POST /eliminar-cama.
+
+Verificacion realizada:
+- Busqueda de patrones con @rol_requerido encima de @bp.route.
+- Compilacion de app/routes.py con python -m py_compile.
+
+1.6. Arranque local con archivo .env no versionado
+Fecha: 2026-05-18
+
+Cambios realizados:
+- Aniadida carga automatica de variables desde un archivo .env local si existe.
+- Mantenidas SECRET_KEY y MONGO_URI como variables obligatorias.
+- Confirmado que .env esta ignorado por Git y no se sube al repositorio.
+- Corregido .env.example para que conserve solo valores de ejemplo sin credenciales reales.
+
+Notas:
+- Este cambio solo afecta al arranque local o a entornos que tengan un .env junto a run.py.
+- No modifica el .env del servidor ni cambia usuarios o contrasenas de MongoDB.

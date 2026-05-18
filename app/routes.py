@@ -150,8 +150,8 @@ def preview_redirect():
     flash("Acceso no permitido", "danger")
     return redirect(url_for('main.login'))
 
-@rol_requerido('admin')
 @bp.route("/preview", methods=["POST"])
+@rol_requerido('admin')
 def preview():
     file = request.files.get("excel")  
     if not file or not allowed_file(file.filename):
@@ -503,8 +503,8 @@ def gestion_edificio_preview_redirect():
     flash("Acceso no permitido", "danger")
     return redirect(url_for('main.login'))
 
-@rol_requerido('admin')
 @bp.route('/gestion-edificio/preview', methods=['POST'])
+@rol_requerido('admin')
 def gestion_edificio_preview():
 
     file = request.files.get('edificio_excel')
@@ -530,8 +530,8 @@ def gestion_edificio_apply_redirect():
     flash("Acceso no permitido", "danger")
     return redirect(url_for('main.login'))
 
-@rol_requerido('admin')
 @bp.route('/gestion-edificio/apply', methods=['POST'])
+@rol_requerido('admin')
 def gestion_edificio_apply():
 
     filename = session.get('gestion_edificio_tempfile')
@@ -592,8 +592,8 @@ def gestion_edificio_filtrar_redirect():
     flash("Acceso no permitido", "danger")
     return redirect(url_for('main.login'))
 
-@rol_requerido('admin')
 @bp.route('/gestion-edificio/filtrar', methods=['POST'])
+@rol_requerido('admin')
 def gestion_edificio_filtrar():
 
     planta = request.form.get('planta', '').strip()
@@ -633,8 +633,8 @@ def eliminar_cama_redirect():
     flash("Acceso no permitido", "danger")
     return redirect(url_for('main.login'))
 
-@rol_requerido('admin')
 @bp.route('/eliminar-cama', methods=['POST'])
+@rol_requerido('admin')
 def eliminar_cama():
 
     bed_id = request.form.get('bed_id')
