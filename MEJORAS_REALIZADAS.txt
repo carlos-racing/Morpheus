@@ -53,3 +53,42 @@ Aviso importante:
 - La historia remota debe subirse con force push.
 - Cualquier clon existente debe volver a clonar el repositorio o resincronizarse contra la nueva historia.
 - Aunque se purgue Git, las credenciales expuestas deben considerarse comprometidas y rotarse.
+
+1.3. Limitar exposicion de MongoDB a la red interna
+Fecha: 2026-05-15
+
+Cambios realizados:
+- Activado UFW en el servidor.
+- Permitido acceso a MongoDB por el puerto 27017 desde la red interna 192.168.0.0/16.
+- Permitido acceso a MongoDB desde la red Docker de Morpheus 172.28.0.0/16.
+- Denegado acceso general al puerto 27017 desde cualquier otro origen.
+- Mantenido MongoDB accesible para la LAN, otros contenedores y usos de docencia.
+- Aniadida regla UDP para TeamSpeak en el puerto 9987.
+- Identificado el puerto 9090 como acceso web de administracion del servidor y mantenido abierto.
+- Creado/configurado un usuario especifico de MongoDB para Morpheus con permisos sobre la base Morpheus.
+- Actualizado Morpheus para usar el usuario especifico de la aplicacion en lugar de root/admin.
+
+Estado UFW esperado para MongoDB:
+- ALLOW 192.168.0.0/16 -> 27017/tcp.
+- ALLOW 172.28.0.0/16 -> 27017/tcp.
+- DENY resto -> 27017/tcp.
+
+Nota:
+- MongoDB sigue publicado para la red interna porque se usa en clases y por otros servicios.
+- No se debe usar el usuario root/admin de MongoDB desde aplicaciones.
+
+1.4. HTTPS para Morpheus
+Fecha: 2026-05-18
+
+Cambios realizados:
+- Publicado Morpheus detras del contenedor nginx_proxy.
+- Configurado el dominio interno morpheus.eeae.es para acceder a la aplicacion.
+- Aniadido bloque HTTPS en nginx_proxy para Morpheus.
+- Configurada redireccion HTTP a HTTPS para morpheus.eeae.es.
+- Generado y usado certificado interno/autofirmado para morpheus.eeae.es.
+- Distribuido el certificado a los equipos mediante GPO del dominio.
+- Evitado el envio de credenciales por HTTP plano al usar la aplicacion.
+
+Notas:
+- El certificado privado .key debe permanecer solo en el servidor.
+- Si un equipo sigue mostrando aviso de certificado, debe actualizar directivas con gpupdate /force y reiniciar el navegador.

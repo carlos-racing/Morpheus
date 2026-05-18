@@ -13,25 +13,16 @@ de la aplicacion. No son cambios aplicados, sino una lista de trabajo priorizada
 - Cambiar la contrasena root/admin de Mongo si ha sido compartida.
 - Cambiar la contrasena inicial del usuario admin de la aplicacion.
 
-1.2. Cerrar exposicion de MongoDB
-- Evitar publicar MongoDB en 0.0.0.0:27017 si no es necesario.
-- Preferir acceso por red Docker interna o limitarlo a la LAN/firewall.
-- Usar un usuario especifico de la aplicacion con permisos solo sobre la BD Morpheus.
-
-1.3. HTTPS
-- Publicar Morpheus detras del nginx_proxy con HTTPS.
-- Evitar uso de credenciales por HTTP plano.
-
-1.4. Revisar proteccion de rutas
+1.3. Revisar proteccion de rutas
 - Comprobar el orden de decoradores @bp.route y @rol_requerido.
 - Algunas rutas pueden quedar registradas sin aplicar el control de rol si el orden es incorrecto.
 - Revisar especialmente endpoints de preview, apply, filtrar y eliminar.
 
-1.5. Anadir CSRF
+1.4. Anadir CSRF
 - Proteger todos los formularios POST contra CSRF.
 - Afecta a login, asignacion, desocupacion, gestion de usuarios, gestion de edificio y eliminaciones.
 
-1.6. Seguridad de sesiones
+1.5. Seguridad de sesiones
 - Configurar SESSION_COOKIE_HTTPONLY.
 - Configurar SESSION_COOKIE_SAMESITE.
 - Configurar SESSION_COOKIE_SECURE cuando se use HTTPS.
