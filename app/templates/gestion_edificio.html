@@ -12,6 +12,7 @@
   {% endwith %}
 
   <form method="post" action="{{ url_for('main.gestion_edificio_preview') }}" enctype="multipart/form-data">
+    {{ csrf_field() }}
     <input type="file" name="edificio_excel" accept=".xlsx,.xls" required><br><br>
     <button type="submit" class="btn btn-primary" style="width: 100%;">Vista previa</button>
   </form>
@@ -21,6 +22,7 @@
   <h2 style="text-align:center;">Eliminar camas individualmente</h2>
 
   <form method="post" action="{{ url_for('main.gestion_edificio_filtrar') }}">
+    {{ csrf_field() }}
     <input type="hidden" name="accion" value="filtrar">
     <div class="form-group">
       <label for="planta">Planta</label>
@@ -83,6 +85,7 @@
         <td>{{ cama.numero }}</td>
         <td>
           <form method="post" action="{{ url_for('main.eliminar_cama') }}">
+                {{ csrf_field() }}
                 <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
                 <input type="hidden" name="planta" value="{{ request.form.get('planta', '') }}">
                 <input type="hidden" name="zona" value="{{ request.form.get('zona', '') }}">

@@ -10,6 +10,7 @@
     {% endfor %}
   {% endwith %}
   <form method="post" action="{{ url_for('main.gestion_usuarios') }}">
+    {{ csrf_field() }}
     <input type="hidden" name="accion" value="registrar">
     <div class="form-group">
       <label for="nombre">Nombre de usuario</label>
@@ -37,6 +38,7 @@
   <hr style="margin: 2em 0;">
 
   <form method="post" action="{{ url_for('main.gestion_usuarios') }}">
+    {{ csrf_field() }}
     <input type="hidden" name="accion" value="consultar">
     <button type="submit" class="btn btn-secondary" style="width: 100%;">Consultar usuarios</button>
   </form>
@@ -56,6 +58,7 @@
         <td>{{ u.rol }}</td>
         <td>
           <form method="post" action="{{ url_for('main.gestion_usuarios') }}" style="display:inline;">
+            {{ csrf_field() }}
             <input type="hidden" name="accion" value="cambiar_clave">
             <input type="hidden" name="usuario" value="{{ u.nombre }}">
             <input type="password" name="nueva" placeholder="Nueva contraseña" required>
@@ -63,6 +66,7 @@
             <button type="submit">Cambiar contraseña</button>
           </form>
           <form method="post" action="{{ url_for('main.gestion_usuarios') }}" style="display:inline; margin-left:1em;">
+            {{ csrf_field() }}
             <input type="hidden" name="accion" value="eliminar">
             <input type="hidden" name="usuario" value="{{ u.nombre }}">
             <button type="submit" onclick="return confirm('¿Eliminar usuario {{ u.nombre }}?');">Eliminar</button>

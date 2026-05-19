@@ -13,10 +13,6 @@ de la aplicacion. No son cambios aplicados, sino una lista de trabajo priorizada
 - Cambiar la contrasena root/admin de Mongo si ha sido compartida.
 - Cambiar la contrasena inicial del usuario admin de la aplicacion.
 
-1.4. Anadir CSRF
-- Proteger todos los formularios POST contra CSRF.
-- Afecta a login, asignacion, desocupacion, gestion de usuarios, gestion de edificio y eliminaciones.
-
 1.5. Seguridad de sesiones
 - Configurar SESSION_COOKIE_HTTPONLY.
 - Configurar SESSION_COOKIE_SAMESITE.

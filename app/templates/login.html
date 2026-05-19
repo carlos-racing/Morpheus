@@ -28,6 +28,7 @@
     {% endwith %}
 
     <form method="post" action="{{ url_for('main.login') }}">
+      {{ csrf_field() }}
       <div class="form-group mb-3">
         <label for="nombre">Nombre de Usuario</label>
         <input type="text" name="nombre" id="nombre" class="form-control" required>

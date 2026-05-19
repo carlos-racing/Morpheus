@@ -105,6 +105,7 @@
                 <br>Nº Alumno: {{ cama.numero_alumno }}
                 <br>Brigada: {{ cama.brigada }} - Especialidad: {{ cama.especialidad }}
                 <form method="post" action="{{ url_for('main.desocupar_cama') }}" style="display:inline;">
+                  {{ csrf_field() }}
                   <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
                   <input type="hidden" name="planta" value="{{ request.args.get('planta', '') }}">
                   <input type="hidden" name="zona" value="{{ request.args.get('zona', '') }}">

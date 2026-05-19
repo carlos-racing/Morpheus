@@ -6,6 +6,7 @@
 <section class="container">
   <h1>Asignar camas a alumnos</h1>
   <form method="post" action="{{ url_for('main.assign') }}">
+    {{ csrf_field() }}
     <table id="assignTable">
       <thead>
         <tr>

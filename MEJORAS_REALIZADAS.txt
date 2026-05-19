@@ -121,3 +121,20 @@ Cambios realizados:
 Notas:
 - Este cambio solo afecta al arranque local o a entornos que tengan un .env junto a run.py.
 - No modifica el .env del servidor ni cambia usuarios o contrasenas de MongoDB.
+
+1.7. Anadir proteccion CSRF
+Fecha: 2026-05-19
+
+Cambios realizados:
+- Aniadida proteccion CSRF global para todas las peticiones POST.
+- Generado token CSRF por sesion y expuesto a las plantillas mediante csrf_token() y csrf_field().
+- Aniadido campo oculto CSRF a los formularios POST de login.
+- Aniadido campo oculto CSRF a asignacion y confirmacion de camas.
+- Aniadido campo oculto CSRF a desocupacion de camas.
+- Aniadido campo oculto CSRF a gestion de usuarios.
+- Aniadido campo oculto CSRF a gestion de edificio, preview, apply, filtrar y eliminar cama.
+- Aniadido token CSRF al cierre automatico enviado por sendBeacon a /logout_auto.
+
+Verificacion realizada:
+- Revisados todos los formularios POST de app/templates.
+- Compilacion de app/__init__.py, app/config.py y app/routes.py con python -m py_compile.

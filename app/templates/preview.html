@@ -50,6 +50,7 @@
       </tbody>
     </table>
       <form method="post" action="{{ url_for('main.apply_update') }}">
+        {{ csrf_field() }}
         <input type="hidden" name="filename" value="{{ filename }}">
         <button type="submit">Aplicar cambios</button>
       </form>

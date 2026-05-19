@@ -5,6 +5,7 @@
 <div class="container">
   <h2>Previsualización de alumnos y asignación de camas</h2>
   <form method="post" action="{{ url_for('main.assign_upload') }}">
+    {{ csrf_field() }}
     <table>
       <thead>
         <tr>

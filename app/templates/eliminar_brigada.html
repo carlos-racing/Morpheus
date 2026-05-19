@@ -12,6 +12,7 @@
   {% endwith %}
 
   <form method="post">
+    {{ csrf_field() }}
     <label for="brigada"><strong>BRIGADA</strong></label>
     <select name="brigada" class="form-control" required>
       <option value="">-- Selecciona una brigada --</option>

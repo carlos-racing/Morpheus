@@ -142,7 +142,9 @@
 
     window.addEventListener('beforeunload', function () {
       if (isLeavingApp) {
-        navigator.sendBeacon('/logout_auto');
+        const data = new FormData();
+        data.append('csrf_token', '{{ csrf_token() }}');
+        navigator.sendBeacon('/logout_auto', data);
       }
 
       localStorage.setItem('scrollY', window.scrollY);

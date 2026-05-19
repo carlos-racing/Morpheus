@@ -6,6 +6,7 @@
   <h2>Vista previa del archivo</h2>
   {% if registros %}
     <form method="post" action="{{ url_for('main.gestion_edificio_apply') }}">
+      {{ csrf_field() }}
       <input type="hidden" name="filename" value="{{ filename }}">
       <input type="hidden" name="eliminar_anteriores" value="{{ eliminar_anteriores }}">
       <table>
