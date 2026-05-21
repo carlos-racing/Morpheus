@@ -1,0 +1,96 @@
+PENDIENTE DE APLICAR EN EL SERVIDOR
+===================================
+
+Este documento resume los cambios del repositorio que deben aplicarse en el
+servidor de Morpheus cuando se actualice desde GitHub.
+
+
+1. Actualizar codigo desde GitHub
+---------------------------------
+
+En el servidor:
+
+cd /home/jgars71/morpheus
+git pull
+
+
+2. Reconstruir el contenedor
+----------------------------
+
+Despues de traer los cambios:
+
+docker compose up -d --build
+
+
+3. Variables nuevas/revisadas en .env del servidor
+--------------------------------------------------
+
+Anadir o revisar estas variables en /home/jgars71/morpheus/.env:
+
+SESSION_COOKIE_SECURE=true
+SESSION_LIFETIME_MINUTES=480
+
+Notas:
+- SESSION_COOKIE_SECURE=true debe usarse en produccion porque Morpheus ya esta publicado por HTTPS.
+- En local puede mantenerse SESSION_COOKIE_SECURE=false para usar http://127.0.0.1:5000.
+- No cambiar MONGO_URI, SECRET_KEY ni contrasenas salvo que se quiera rotar credenciales.
+
+
+4. Cambios de seguridad incluidos
+---------------------------------
+
+Proteccion de rutas:
+- Corregido el orden de decoradores para que Flask registre rutas POST protegidas.
+- Afecta a preview, apply, filtrar y eliminar cama.
+
+CSRF:
+- Todas las peticiones POST validan token CSRF.
+- Formularios protegidos: login, asignacion, desocupacion, gestion de usuarios,
+  gestion de edificio, preview/apply, filtrar y eliminar.
+- /logout_auto envia token CSRF mediante sendBeacon.
+
+Sesiones:
+- SESSION_COOKIE_HTTPONLY activado.
+- SESSION_COOKIE_SAMESITE=Lax activado.
+- SESSION_COOKIE_SECURE configurable por entorno.
+- Duracion de sesion configurable.
+- El login limpia la sesion previa antes de crear una nueva sesion autenticada.
+- /logout_auto solo limpia sesion cuando hay usuario logueado.
+
+
+5. Comprobaciones despues de desplegar
+--------------------------------------
+
+docker compose ps
+docker compose logs --tail=80 morpheus
+
+Probar en navegador:
+- https://morpheus.eeae.es/login carga correctamente.
+- Login correcto con usuario valido.
+- Login incorrecto muestra error de credenciales, no error 400.
+- Consulta de camas.
+- Desocupar una cama de prueba.
+- Gestion de usuarios como admin.
+- Gestion de edificio: filtrar y eliminar una cama de prueba si procede.
+- Subida/preview de Excel si hay archivo de prueba.
+
+
+6. Si aparece error 400
+----------------------
+
+Un error 400 en un POST suele indicar fallo de CSRF.
+
+Pasos rapidos:
+- Recargar la pagina del formulario.
+- Cerrar sesion y volver a entrar.
+- Revisar logs:
+
+docker compose logs --tail=80 morpheus
+
+
+7. Importante
+-------------
+
+Estos cambios no requieren modificar la base de datos.
+Estos cambios no requieren cambiar usuarios ni contrasenas de MongoDB.
+El archivo .env real del servidor no debe subirse a GitHub.

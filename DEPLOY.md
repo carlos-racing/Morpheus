@@ -14,6 +14,13 @@ cp .env.example .env
 
 Edita `.env` y cambia, como minimo, `SECRET_KEY` y `ADMIN_PASSWORD`.
 
+Para produccion detras de HTTPS, configura tambien:
+
+```text
+SESSION_COOKIE_SECURE=true
+SESSION_LIFETIME_MINUTES=480
+```
+
 ## 2. MongoDB
 
 Configura `MONGO_URI` en `.env` con las credenciales reales del MongoDB del servidor.

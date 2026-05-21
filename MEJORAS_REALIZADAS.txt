@@ -138,3 +138,19 @@ Cambios realizados:
 Verificacion realizada:
 - Revisados todos los formularios POST de app/templates.
 - Compilacion de app/__init__.py, app/config.py y app/routes.py con python -m py_compile.
+
+1.8. Seguridad de sesiones
+Fecha: 2026-05-19
+
+Cambios realizados:
+- Configurado SESSION_COOKIE_HTTPONLY para impedir acceso a la cookie desde JavaScript.
+- Configurado SESSION_COOKIE_SAMESITE=Lax para reducir envio de cookies en navegaciones externas.
+- Aniadida configuracion SESSION_COOKIE_SECURE mediante variable de entorno.
+- Aniadida duracion configurable de sesion con SESSION_LIFETIME_MINUTES.
+- Cambiado el login para limpiar la sesion anterior y crear una sesion permanente con caducidad.
+- Conservado el cierre automatico de sesion al cerrar pestana o ventana mediante /logout_auto.
+- Documentado en DEPLOY.md que produccion detras de HTTPS debe usar SESSION_COOKIE_SECURE=true.
+
+Notas:
+- En local puede mantenerse SESSION_COOKIE_SECURE=false para poder usar http://127.0.0.1:5000.
+- En produccion con https://morpheus.eeae.es debe configurarse SESSION_COOKIE_SECURE=true en el .env del servidor.

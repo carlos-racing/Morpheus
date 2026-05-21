@@ -419,9 +419,10 @@ def login():
         usuario = mongo.db.usuarios.find_one({'nombre': nombre})
         
         if usuario and check_password_hash(usuario['contraseña'], contraseña):
+            session.clear()
+            session.permanent = True
             session['usuario'] = usuario['nombre']
             session['rol'] = usuario['rol']
-            session.permanent = False
             return redirect(url_for('main.panel'))
         else:
             flash('Credenciales incorrectas', 'danger')
@@ -436,7 +437,8 @@ def logout():
 #Este bp cierra sesión automáticamente al cerrar la ventana o pestaña
 @bp.route('/logout_auto', methods=['POST'])
 def logout_auto():
-    session.clear()
+    if session.get('usuario'):
+        session.clear()
     return '', 204
 
 #Este bp añade, elimina, consulta y cambia claves desde el panel admin
